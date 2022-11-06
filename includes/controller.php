@@ -65,10 +65,6 @@ add_action(
 			true
 		);
 
-		if ( wpcf7_load_js() ) {
-			wpcf7_enqueue_scripts();
-		}
-
 		wp_register_style(
 			'contact-form-7',
 			wpcf7_plugin_url( 'includes/css/styles.css' ),
@@ -94,10 +90,6 @@ add_action(
 			'1.12.1',
 			'screen'
 		);
-
-		if ( wpcf7_load_css() ) {
-			wpcf7_enqueue_styles();
-		}
 	},
 	10, 0
 );
@@ -107,20 +99,22 @@ add_action(
  * Enqueues scripts.
  */
 function wpcf7_enqueue_scripts() {
-	wp_enqueue_script( 'contact-form-7' );
+	if ( wpcf7_load_js() ) {
+		wp_enqueue_script( 'contact-form-7' );
 
-	$wpcf7 = array(
-		'api' => array(
-			'root' => sanitize_url( get_rest_url() ),
-			'namespace' => 'contact-form-7/v1',
-		),
-	);
+		$wpcf7 = array(
+			'api' => array(
+				'root' => sanitize_url( get_rest_url() ),
+				'namespace' => 'contact-form-7/v1',
+			),
+		);
 
-	if ( defined( 'WP_CACHE' ) and WP_CACHE ) {
-		$wpcf7['cached'] = 1;
+		if ( defined( 'WP_CACHE' ) and WP_CACHE ) {
+			$wpcf7['cached'] = 1;
+		}
+
+		wp_localize_script( 'contact-form-7', 'wpcf7', $wpcf7 );
 	}
-
-	wp_localize_script( 'contact-form-7', 'wpcf7', $wpcf7 );
 
 	do_action( 'wpcf7_enqueue_scripts' );
 }
@@ -138,10 +132,12 @@ function wpcf7_script_is() {
  * Enqueues styles.
  */
 function wpcf7_enqueue_styles() {
-	wp_enqueue_style( 'contact-form-7' );
+	if ( wpcf7_load_css() ) {
+		wp_enqueue_style( 'contact-form-7' );
 
-	if ( wpcf7_is_rtl() ) {
-		wp_enqueue_style( 'contact-form-7-rtl' );
+		if ( wpcf7_is_rtl() ) {
+			wp_enqueue_style( 'contact-form-7-rtl' );
+		}
 	}
 
 	do_action( 'wpcf7_enqueue_styles' );

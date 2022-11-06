@@ -225,6 +225,9 @@ function wpcf7_contact_form_tag_func( $atts, $content = null, $code = '' ) {
 		);
 	}
 
+	wpcf7_enqueue_scripts();
+	wpcf7_enqueue_styles();
+
 	return $contact_form->form_html( $atts );
 }
 

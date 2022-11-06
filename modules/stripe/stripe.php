@@ -28,22 +28,22 @@ function wpcf7_stripe_register_service() {
 
 
 add_action(
-	'wpcf7_enqueue_scripts',
-	'wpcf7_stripe_enqueue_scripts',
+	'wp_enqueue_scripts',
+	'wpcf7_stripe_register_scripts',
 	10, 0
 );
 
 /**
- * Enqueues scripts and styles for the Stripe module.
+ * Registers scripts and styles for the Stripe module.
  */
-function wpcf7_stripe_enqueue_scripts() {
+function wpcf7_stripe_register_scripts() {
 	$service = WPCF7_Stripe::get_instance();
 
 	if ( ! $service->is_active() ) {
 		return;
 	}
 
-	wp_enqueue_style( 'wpcf7-stripe',
+	wp_register_style( 'wpcf7-stripe',
 		wpcf7_plugin_url( 'modules/stripe/style.css' ),
 		array(), WPCF7_VERSION, 'all'
 	);
@@ -68,7 +68,7 @@ function wpcf7_stripe_enqueue_scripts() {
 		'version' => WPCF7_VERSION,
 	) );
 
-	wp_enqueue_script(
+	wp_register_script(
 		'wpcf7-stripe',
 		wpcf7_plugin_url( 'modules/stripe/index.js' ),
 		array_merge(
@@ -83,6 +83,27 @@ function wpcf7_stripe_enqueue_scripts() {
 		true
 	);
 
+
+}
+
+add_action(
+	'wpcf7_enqueue_scripts',
+	'wpcf7_stripe_enqueue_scripts',
+	10, 0
+);
+
+/**
+ * Enqueues scripts for the Stripe module.
+ */
+function wpcf7_stripe_enqueue_scripts() {
+	$service = WPCF7_Stripe::get_instance();
+
+	if ( ! $service->is_active() ) {
+		return;
+	}
+
+	wp_enqueue_script( 'wpcf7-stripe' );
+
 	$api_keys = $service->get_api_keys();
 
 	if ( $api_keys['publishable'] ) {
@@ -92,6 +113,24 @@ function wpcf7_stripe_enqueue_scripts() {
 	}
 }
 
+add_action(
+	'wpcf7_enqueue_styles',
+	'wpcf7_stripe_enqueue_styles',
+	10, 0
+);
+
+/**
+ * Enqueues styles for the Stripe module.
+ */
+function wpcf7_stripe_enqueue_styles() {
+	$service = WPCF7_Stripe::get_instance();
+
+	if ( ! $service->is_active() ) {
+		return;
+	}
+
+	wp_enqueue_style( 'wpcf7-stripe' );
+}
 
 add_filter(
 	'wpcf7_skip_spam_check',

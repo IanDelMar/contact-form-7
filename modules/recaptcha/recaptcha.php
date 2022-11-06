@@ -24,14 +24,14 @@ function wpcf7_recaptcha_register_service() {
 
 add_action(
 	'wp_enqueue_scripts',
-	'wpcf7_recaptcha_enqueue_scripts',
+	'wpcf7_recaptcha_register_scripts',
 	20, 0
 );
 
 /**
- * Enqueues frontend scripts for reCAPTCHA.
+ * Registers frontend scripts for reCAPTCHA.
  */
-function wpcf7_recaptcha_enqueue_scripts() {
+function wpcf7_recaptcha_register_scripts() {
 	$service = WPCF7_RECAPTCHA::get_instance();
 
 	if ( ! $service->is_active() ) {
@@ -81,6 +81,23 @@ function wpcf7_recaptcha_enqueue_scripts() {
 		$assets['version'],
 		true
 	);
+}
+
+add_action(
+	'wpcf7_enqueue_scripts',
+	'wpcf7_recaptcha_enqueue_scripts',
+	20, 0
+);
+
+/**
+ * Enqueues frontend scripts for reCAPTCHA.
+ */
+function wpcf7_recaptcha_enqueue_scripts() {
+	$service = WPCF7_RECAPTCHA::get_instance();
+
+	if ( ! $service->is_active() ) {
+		return;
+	}
 
 	wp_enqueue_script( 'wpcf7-recaptcha' );
 
@@ -95,7 +112,6 @@ function wpcf7_recaptcha_enqueue_scripts() {
 		)
 	);
 }
-
 
 add_filter(
 	'wpcf7_form_hidden_fields',
